@@ -69,4 +69,11 @@ def get_all_cards():
     
     return jsonify(response), 200
 
-    
+@card_bp.route("/<card_id>", methods=["DELETE"])
+def delete_card(card_id):
+    card = validate_item(Card,card_id)
+    db.session.delete(card)
+    db.session.commit()
+
+    return {"details":f"Card {card_id} successfully deleted"}, 200
+
