@@ -47,6 +47,26 @@ def get_one_board(board_id):
     board = validate_item(Board, board_id)
     return {"board": board.to_dict()}, 200
 
+@card_bp.route("", methods=["POST"])
+def add_cards():
+    request_body = request.get_json()
 
+    new_card = Card.from_dict(request_body)
+
+    db.session.add(new_card)
+    db.session.commit()
+
+    return {"card": new_card.to_dict()}, 201
+
+@card_bp.route("", methods=["GET"])
+def get_all_cards():
+    response = []
+
+    all_cards = Card.query.all()
+
+    for card in all_cards:
+        response.append(card.to_dict())
+    
+    return jsonify(response), 200
 
     
