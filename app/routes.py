@@ -94,3 +94,17 @@ def post_card_to_board(board_id):
         "id": board_id,
         "card_ids": card_ids  
     }, 200
+
+@board_bp.route("/<board_id>/cards", methods=["GET"])
+def get_cards_from_board(board_id):
+    board = validate_item(Board, board_id)
+    
+    board_dict = board.to_dict()
+    board_dict["cards"] = []
+    
+    for card in board.cards:
+        card_dict = card.to_dict()
+        board_dict["cards"].append(card_dict)
+
+    return jsonify(board_dict), 200
+
