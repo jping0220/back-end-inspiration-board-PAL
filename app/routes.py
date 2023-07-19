@@ -3,6 +3,10 @@ from app import db
 from app.models.board import Board
 from app.models.card import Card
 
+# slack call API
+import requests
+import os
+
 # example_bp = Blueprint('example_bp', __name__)
 board_bp = Blueprint("boards", __name__, url_prefix="/boards")
 card_bp =  Blueprint("cards", __name__, url_prefix="/cards")
@@ -119,5 +123,15 @@ def post_card_to_board(board_id):
 
     board.cards.append(new_card)
     db.session.commit()
+
+    url = "https://slack.com/api/chat.postMessage"
+    token = os.environ.get("SLACKBOT_TOKEN")
+    data ={"channel": "pal-inspiration",
+               "text": f":boom: there is new card added to {board.title} :boom: ",
+               "token": token
+               }
+    response = requests.post(url, data = data)
+
+
 
     return {"card": new_card.to_dict()}, 201
